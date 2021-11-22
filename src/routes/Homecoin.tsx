@@ -100,7 +100,10 @@ function HomeCoin() {
           {coins.map((coin) => (
             <Coin key={coin.id}>
 
-              {/* */}
+              {/* <Link to={{
+                 pathname: where to send data to.
+                 state: data to send
+              }}>*/}
 
               <Link
                 to={{

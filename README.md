@@ -477,3 +477,13 @@ to={{
 
 ```
 
+- If you send the data, the other side can retrieve data by using useLocation method from react-router-dom package. 
+
+```js
+// state will contain the object that gets sent through state.
+  const { state } = useLocation<RouteState>();
+```
+
+- You have to create the RouteState Interface to communicate to the TypeScript.
+
+**Warning: The downside of this is that it won't render if the use goes directly to the page.**
