@@ -487,3 +487,102 @@ to={{
 - You have to create the RouteState Interface to communicate to the TypeScript.
 
 **Warning: The downside of this is that it won't render if the use goes directly to the page.**
+
+# 2.1 Create Coin detail page
+
+- We hit two URL (Coin - information and ticker - price)
+URLS:
+https://api.coinpaprika.com/v1/coins/
+https://api.coinpaprika.com/v1/tickers/
+
+Steps:
+
+1. Create the useState() for each hits
+2. Create useEffect so that API will be requested when the page render
+  - we want to render immediately.
+3. After we retrieve data, we update the state for each hits. 
+4. Create an interface to explain what we data are we getting. 
+  - Set as global variable
+  - Use Objects.key to get all the keys.
+  - Do the object.keys(temp1).join so that you will get the list of all the keys seperated by comma. 
+  - CNTR-D till the end to select all commas. 
+  - Then, press enter. 
+  - CTRL-SHFT-L and put move all the cursor to the end.
+  - Do the same for the values.
+  - just use the interface creator on the website: 
+  https://app.quicktype.io/?l=ts
+
+
+
+# 2.2 Explain Data Type to TypeScript. 
+
+Steps:
+
+1. Create infoData and priceData states. 
+2. Create an interface of data coming in from API.
+3. Save the data after retrieving data from API. 
+
+Coin.tsx
+```js
+interface InfoData {
+  id: string;
+  name: string;
+  symbol: string;
+  rank: number;
+  is_new: boolean;
+  is_active: boolean;
+  type: string;
+  description: string;
+  message: string;
+  open_source: boolean;
+  started_at: string;
+  development_status: string;
+  hardware_wallet: boolean;
+  proof_type: string;
+  org_structure: string;
+  hash_algorithm: string;
+  first_data_at: string;
+  last_data_at: string;
+}
+
+interface PriceData {
+  id: string;
+  name: string;
+  symbol: string;
+  rank: number;
+  circulating_supply: number;
+  total_supply: number;
+  max_supply: number;
+  beta_value: number;
+  first_data_at: string;
+  last_updated: string;
+  quotes: {
+    USD: {
+      ath_date: string;
+      ath_price: number;
+      market_cap: number;
+      market_cap_change_24h: number;
+      percent_change_1h: number;
+      percent_change_1y: number;
+      percent_change_6h: number;
+      percent_change_7d: number;
+      percent_change_12h: number;
+      percent_change_15m: number;
+      percent_change_24h: number;
+      percent_change_30d: number;
+      percent_change_30m: number;
+      percent_from_price_ath: number;
+      price: number;
+      volume_24h: number;
+      volume_24h_change_24h: number;
+    };
+  };
+}
+
+```
+
+*Whatever you use as a hook, you have to put the put the [coinID] as a dependency as below*
+
+- useRouteMatch will tell you whether you are in a specific URL or not. 
+- if you console.log the useRouteMatch, you get an object of the path if you are inside the specified url. 
+- 
