@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { Helmet } from "react-helmet";
 
 // Style component list to style the coins.
 const Container = styled.div`
@@ -82,9 +83,11 @@ function HomeCoin() {
   }, []);
   return (
     <Container>
-      <Header>
-        
-        <Title>📀CryptoCoins Data📀</Title>
+      <Helmet>
+        <title>Crypto Coin World</title>
+      </Helmet>
+      <Header> 
+        <Title>📀 Crypto Coin World 📀</Title>
       </Header>
       {/* if loacing state is true, show <Loader> else show CoinList */}
       {loading ? (

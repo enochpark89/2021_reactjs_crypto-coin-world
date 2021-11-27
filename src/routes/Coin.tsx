@@ -1,6 +1,24 @@
 import { useEffect, useState } from "react";
 import { Switch, Route, useLocation, useParams } from "react-router";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+import { Link } from "react-router-dom";
+import ApexChart from "react-apexcharts";
+
+// Animation
+const comeupAnimation = keyframes`
+  0% {
+    transform: none;
+    opacity: 0;
+  }
+  1% {
+    transform: translateY(-5px);
+    opacity: 0;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+`;
 
 // styled-components for the coin page.
 const Title = styled.h1`
@@ -23,6 +41,12 @@ const Header = styled.header`
   align-items: center;
 `;
 
+const linkStyle = {
+  margin: "1rem",
+  textDecoration: "none",
+  color: 'blue'
+};
+
 
 // styled components for the coin data display section.
 const Overview = styled.div`
@@ -42,6 +66,23 @@ const OverviewItem = styled.div`
     text-transform: uppercase;
     margin-bottom: 5px;
   }
+`;
+
+const LinkItem = styled.main`
+  width: 100%;
+  height: 50px;
+  background-color: white;
+  color: black;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 15px;
+  margin: 10px 0;
+  padding: 20px;
+  transform: translateY(-5px);
+  opacity: 0;
+  animation: ${comeupAnimation} 1s linear forwards;
 `;
 const Description = styled.p`
   margin: 20px 0px;
@@ -90,6 +131,7 @@ interface InfoData {
   last_data_at: string;
   links_extended: Array<{url:string, type:string}>;
 }
+
 interface PriceData {
   id: string;
   name: string;
@@ -123,12 +165,28 @@ interface PriceData {
     };
   };
 }
+
+
+interface PriceHistoricalData {
+  time_open: string;
+  time_close: string;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+  market_cap: number;
+}
+
 function Coin() {
   const [loading, setLoading] = useState(true);
+  // Get the coin id and state from url.
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
   const [info, setInfo] = useState<InfoData>();
   const [priceInfo, setPriceInfo] = useState<PriceData>();
+  const [coinHistory, setCoinHistory] = useState<PriceHistoricalData[]>();
+
 
   useEffect(() => {
     (async () => {
@@ -138,15 +196,26 @@ function Coin() {
       const priceData = await (
         await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
       ).json();
+      
+      // API fetch for historical coin data.
+      const endDate = Math.floor(Date.now() / 1000);
+      const startDate = endDate - 60 * 60 * 24 * 7 * 2;
+
+      const coinHistory = await (
+        await fetch(
+          `https://api.coinpaprika.com/v1/coins/${coinId}/ohlcv/historical?start=${startDate}&end=${endDate}`
+        )
+        ).json();
       setInfo(infoData);
       setPriceInfo(priceData);
+      setCoinHistory(coinHistory);
       // info.links.map((link) => console.log(link))
+
+
+
       setLoading(false);
     })();
   }, [coinId]);
-
-
-
 
   return (
     <Container>
@@ -166,11 +235,11 @@ function Coin() {
             </OverviewItem>
             <OverviewItem>
               <span>Symbol:</span>
-              <span>${info?.symbol}</span>
+              <span>{info?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Open Source:</span>
-              <span>{info?.open_source ? "Yes" : "No"}</span>
+              <span>Price:</span>
+              <span>${priceInfo?.quotes.USD.price.toFixed(2)}</span>
             </OverviewItem>
           </Overview>
           <Description>{info?.description}</Description>
@@ -186,13 +255,69 @@ function Coin() {
             
           </Overview>
           <Tab>
-            <div>Chart</div>
+            <div>CHART (past 2 weeks)</div>
+            <div>
+        <ApexChart
+          type="line"
+          series={[
+            {
+              name: "Price",
+              data: coinHistory?.map((price) => price.close),
+            },
+          ]}
+          options={{
+            theme: {
+              mode: "dark",
+            },
+            chart: {
+              height: 300,
+              width: 500,
+              toolbar: {
+                show: false,
+              },
+              background: "transparent",
+            },
+            grid: { show: false },
+            stroke: {
+              curve: "smooth",
+              width: 4,
+            },
+            yaxis: {
+              title: {text: "Price"},
+              labels: { 
+                show: true,
+                formatter: function (value) {
+                  return "$ " + value.toFixed(0); // The formatter function overrides format property
+                },  
+              },
+            },
+            xaxis: {
+              title: {text: "Date"},
+              axisBorder: { show: false },
+              axisTicks: { show: false },
+              labels: { show: true },
+              type: "datetime",
+              categories: coinHistory?.map((price) => price.time_close),
+            },
+            fill: {
+              type: "gradient",
+              gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
+            },
+            colors: ["#0fbcf9"],
+            tooltip: {
+              y: {
+                formatter: (value) => `$${value.toFixed(2)}`,
+              },
+            },
+            
+          }}
+        />
+    </div>
           </Tab>
           <Tab>
-            <div>Information</div>
-            {info ? info.links_extended.map((link) => <Description>{link.url}</Description>) : console.log("") }
-
+            <div>Information on {info?.name}</div>
           </Tab>
+            {info ? info.links_extended.map((link) => <LinkItem><a href={link.url} rel="noreferrer" target="_blank">{link.url}</a></LinkItem>) : console.log("") }
         </>
       )}
     </Container>
