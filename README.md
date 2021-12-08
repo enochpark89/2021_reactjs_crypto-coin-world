@@ -442,7 +442,7 @@ API link:
 api.vercel.app/api/icon/<coinname in lowercase>
 
 - Create a Img components to resize the image.
-```tsx
+```js
 // Img styled component
 const Img = styled.img`
   width: 35px;
