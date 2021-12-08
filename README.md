@@ -14,8 +14,8 @@ Home            |  Detail
 # Plan
 
 1. Install ReactJS with TypeScript
-2. Fetch data from coinpaprika
-3. Display data using ReactJS and render an ineractive page with styles.
+2. Fetch data from coinpaprika API
+3. Display data using ReactJS and render an interactive page with styles.
 
 # File structure:
 
