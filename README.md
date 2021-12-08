@@ -1,6 +1,15 @@
-```# Crypto World
+# Crypto World
 
 - This project is to learn how to use ReactJS and TypeScript to create a website that displays up-tp-date information about crypto currency
+
+# Preview
+
+URL: https://sad-williams-8a7777.netlify.app/#/btc-bitcoin
+
+Home            |  Detail
+:-------------------------:|:-------------------------:
+![](cryptoworld-2.jpg) | ![](cryptoworld-1.jpg)
+
 
 # Plan
 
@@ -8,7 +17,7 @@
 2. Fetch data from coinpaprika
 3. Display data using ReactJS and render an ineractive page with styles.
 
-File structure:
+# File structure:
 
 - Home
     - Coin Data
