@@ -4,7 +4,7 @@
 
 # Preview
 
-URL: https://sad-williams-8a7777.netlify.app/#/btc-bitcoin
+URL: https://sad-williams-8a7777.netlify.app/#/
 
 Home            |  Detail
 :-------------------------:|:-------------------------:
